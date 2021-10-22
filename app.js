@@ -1,17 +1,23 @@
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
+const { MONGOURI } = require('./keys');
 require("dotenv").config();
 
-app.use("/",(req,res,next)=>{
-    
-    console.log("hello")
-    res.send("hei")
-    next();
-     
+
+require('./models/user')
+
+app.use(express.json());
+app.use(require('./routes/admin'));
+
+mongoose.connect(MONGOURI)
+mongoose.connection.on('connected',()=>{
+    console.log('mongoose connected...!');
 })
 
-app.use("/get",(req,res,next)=>{
-    console.log("hi")
+mongoose.connection.on('error',(err)=>{
+    console.log(err);
 })
+
 
 app.listen(process.env.PORT || 8100 );
